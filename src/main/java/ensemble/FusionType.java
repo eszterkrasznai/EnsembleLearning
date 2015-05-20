@@ -1,4 +1,4 @@
-package decision;
+package ensemble;
 
 /**
  * Created by IntelliJ IDEA.

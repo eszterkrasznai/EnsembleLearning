@@ -1,4 +1,4 @@
-package decision;
+package ensemble;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import weka.classifiers.Classifier;

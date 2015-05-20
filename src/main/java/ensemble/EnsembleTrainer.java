@@ -1,4 +1,4 @@
-package decision;
+package ensemble;
 
 
 import classifier.PatternClassifier;
