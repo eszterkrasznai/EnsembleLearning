@@ -170,6 +170,7 @@ class EnsembleTrainer{
         return accStat;
     }
 
+    // This is the main method of the application (My first test commit)
     public static void main(String[] args) {
 
         List<Classifier> classifiers = new ArrayList<Classifier>();
