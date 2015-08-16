@@ -2,7 +2,9 @@ package ensemble;
 
 
 import classifier.PatternClassifier;
+
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
+
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeSelection;
 import weka.attributeSelection.ConsistencySubsetEval;
@@ -18,11 +20,13 @@ import weka.classifiers.trees.RandomTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
+import weka.core.stemmers.NullStemmer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -37,7 +41,8 @@ class EnsembleTrainer{
     private DescriptiveStatistics senStat;
     private DescriptiveStatistics speStat;
     private DescriptiveStatistics accStat;
-
+    private static List<NullValueStatistic> nullValueStatistic;
+    
     private EnsembleTrainer(List<Classifier> classifiers, FusionType fusionType, Search search, int numFolds) {
         this.classifiers = classifiers;
         this.fusionType = fusionType;
@@ -154,7 +159,13 @@ class EnsembleTrainer{
                 if (!Double.isNaN(acc)) {
                     accStat.addValue(acc);
                 }
-
+                
+                nullValueStatistic.add(new NullValueStatistic(fn,acc,fusionType));
+                
+                System.out.println("nullas ertek: " + fn);
+                System.out.println("egyes ertek: " + tp);
+                System.out.println(i +". kiertekeles pontossaga:" + acc);
+                System.out.println("FusionType: " + fusionType);
         }
     }
 
@@ -182,14 +193,23 @@ class EnsembleTrainer{
         classifiers.add(new RandomTree());
         classifiers.add(new PatternClassifier());
         classifiers.add(new MultilayerPerceptron());
+        
+        nullValueStatistic = new ArrayList<NullValueStatistic>();
+        
         Search s = Search.BACKWARD_SEARCH;
-        FusionType ft = FusionType.SOFT_AVG;
-        System.out.println(s.name() + " " + ft.name());
-        EnsembleTrainer trainer = new EnsembleTrainer(classifiers, ft, s, 10);
-        try {
-            trainer.validate("valami.arff",10,true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for(FusionType fusi : FusionType.values()) {
+        	 FusionType ft = fusi;
+             System.out.println(s.name() + " " + ft.name());
+             EnsembleTrainer trainer = new EnsembleTrainer(classifiers, ft, s, 10);
+             try {
+                 trainer.validate("C:/Users/Bence/Desktop/test.arff",10,true);
+                 System.out.println(trainer.getAccStat());
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+        }
+        for(NullValueStatistic n : nullValueStatistic)  {
+        	n.toString();
         }
     }
 }
