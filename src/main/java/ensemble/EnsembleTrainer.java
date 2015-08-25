@@ -25,6 +25,7 @@ import weka.core.stemmers.NullStemmer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -202,12 +203,17 @@ class EnsembleTrainer{
              System.out.println(s.name() + " " + ft.name());
              EnsembleTrainer trainer = new EnsembleTrainer(classifiers, ft, s, 10);
              try {
-                 trainer.validate("C:/Users/Bence/Desktop/test.arff",10,true);
+                 trainer.validate("C:/Users/Eszter/Desktop/test.arff",10,true);
                  System.out.println(trainer.getAccStat());
              } catch (Exception e) {
                  e.printStackTrace();
              }
+            
         }
+        
+        Date now = new Date();
+        System.out.println("toString(): " + now);
+        
         for(NullValueStatistic n : nullValueStatistic)  {
         	n.toString();
         }
