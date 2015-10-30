@@ -40,6 +40,12 @@ public enum Search {
         return classifiers;
     }
 
+    
+    /**
+     * ?
+     * @param classifier
+     * @return
+     */
     private double evaluateSingle(Classifier classifier) {
         DescriptiveStatistics accStat = new DescriptiveStatistics();
         dataset.randomize(new Random());
@@ -84,6 +90,11 @@ public enum Search {
         return accStat.getMean();
     }
 
+    
+    /**
+     * ?
+     * @param array
+     */
     private void normalize(double[] array) {
         double sum = 0;
         for (int i = 0; i < array.length; ++i) {
@@ -97,7 +108,11 @@ public enum Search {
         }
     }
 
-
+/**
+ * Beállítja a súlyt?
+ * @param ensemble
+ * @return
+ */
     public double[] assignWeights(List<Classifier> ensemble) {
         double[] weights = new double[ensemble.size()];
         for (int i = 0; i < weights.length; ++i) {
@@ -112,7 +127,11 @@ public enum Search {
         return weights;
     }
 
-
+/**
+ * ?
+ * @param ensemble
+ * @return
+ */
     private double evaluateEnsemble(List<Classifier> ensemble) {
         int size = ensemble.size();
         boolean isWeighted = fusionType == FusionType.WEIGHTED_MAJORITY;
@@ -122,6 +141,7 @@ public enum Search {
             fusionType.setWeights(weights);
         }
 
+       
         DescriptiveStatistics accStat = new DescriptiveStatistics();
         dataset.randomize(new Random());
         for (int i = 0; i < numFolds; ++i) {
@@ -182,6 +202,11 @@ public enum Search {
         return accStat.getMean();
     }
 
+    /**
+     * Visszaada a legjobb osztályozókból álló listát
+     * @param list
+     * @return A legjobb osztályozó lista
+     */
     private Classifier selectBest(List<Classifier> list) {
         Classifier best = list.get(0);
         double bestScore = evaluateSingle(best);
@@ -197,6 +222,11 @@ public enum Search {
         return best;
     }
 
+    /**
+     * Visszaadja a legrosszabb osztályozókból álló listát
+     * @param list 
+     * @return A legrosszabb osztályozó lista
+     */
     private Classifier selectWorst(List<Classifier> list) {
         Classifier worst = list.get(0);
         double worstScore = evaluateSingle(worst);
@@ -212,11 +242,20 @@ public enum Search {
         return worst;
     }
 
+    /**
+     * 
+     * @param list
+     * @return
+     */
     private Classifier selectRandom(List<Classifier> list) {
         Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
 
+    /**
+     * A legjobb osztályozóhoz hozzárendeli egyenként a többi osztályozót egészen addig amíg meg nem találja az optimális eredményt
+     * @return Optimális keresési eredmény
+     */
     private List<Classifier> forwardSearch() {
         List<Classifier> optimal = new ArrayList<Classifier>();
         List<Classifier> avaliable = new ArrayList<Classifier>(classifiers);
@@ -247,6 +286,12 @@ public enum Search {
         return optimal;
     }
 
+    /**
+     * Az osztályozó listából folyamatosan kivesz 1-1 osztályozót, hogy összállítsa a legoptimálisabb osztályozó listát
+     * @param classifierList Osztályozó lista
+     * @return Optimális keresési eredmény
+     */
+    
     private List<Classifier> backwardSearch(List<Classifier> classifierList) {
 
         List<Classifier> optimal = new ArrayList<Classifier>(classifierList);
@@ -271,7 +316,10 @@ public enum Search {
             return backwardSearch(optimal);
         }
     }
-
+/**
+ * Visszaadja a keresés tipusától függõen az optimális osztályozó listát
+ * @return List<Classifier> az optmális osztályozó lista
+ */
     public List<Classifier> select() {
         if (classifiers == null || classifiers.isEmpty() || dataset == null || numFolds < 1 || fusionType == null) {
             throw new IllegalArgumentException();

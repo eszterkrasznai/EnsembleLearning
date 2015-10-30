@@ -27,6 +27,10 @@ public enum FusionType {
         this.weights = weights;
     }
 
+    /**
+     * Visszaadja a legnagyobb elemet
+     * @return legnagyobb elem
+     */
     private double max() {
         double max = Double.MIN_VALUE;
         for (int i = 0; i < votes.length; ++i) {
@@ -37,6 +41,10 @@ public enum FusionType {
         return max;
     }
 
+    /**
+     * Visszaadja a legkisebb elemet
+     * @return legkisebb elem
+     */
     private double min() {
         double min = Double.MAX_VALUE;
         for (int i = 0; i < votes.length; ++i) {
@@ -47,6 +55,10 @@ public enum FusionType {
         return min;
     }
 
+    /**
+     * Visszaadja az adott elemek átlagát
+     * @return átlag
+     */
     private double avg() {
         double avg = 0;
         for (int i = 0; i < votes.length; ++i) {
@@ -55,6 +67,10 @@ public enum FusionType {
         return avg / (double)votes.length;
     }
 
+    /**
+     * Visszaadja az adott elemek szorzatát
+     * @return szorzat eredménye
+     */
     private double mul() {
         double mul = votes[0];
         for (int i = 1; i < votes.length; ++i) {
@@ -63,6 +79,10 @@ public enum FusionType {
         return mul;
     }
 
+    /**
+     * Visszaadja a több szavazattal rendelkezõ osztálycímkét.
+     * @return szavazás eredménye
+     */
     private double majorityVoting() {
         double vote = 0;
         boolean isWeighted = weights != null;
@@ -83,6 +103,10 @@ public enum FusionType {
     }
 
 
+    /**
+     * ?
+     * @return
+     */
     public double apply() {
         if (votes == null || votes.length == 0) {
             throw new IllegalArgumentException();
