@@ -69,9 +69,13 @@ class EnsembleTrainer{
         // A keresõnek beállítom, hogy milyen fusiontype-al dolgozzon
         search.setFusionType(fusionType);
         
+        
+        /**
+         * Végigmegy az összes osztályzozón az adott példány
+         */
         optimalSet = search.select();
         for (Classifier classifier : optimalSet) {
-        	//Itt történik a tanulás
+        	//Itt történik a tanulás;  itt mondja meg, hogy 1-es vagy 0-ás és ezt hasonlítom össze a ClassValueval.
                 classifier.buildClassifier(training);
         }
         if (fusionType == FusionType.WEIGHTED_MAJORITY && optimalSet.size() != 1) {
@@ -91,7 +95,7 @@ class EnsembleTrainer{
 
         for (int j = 0; j < size; ++j) {
             if (fusionType == FusionType.MAJORITY || fusionType == FusionType.WEIGHTED_MAJORITY) {
-            	// Mit csinál?
+            	// a j-edik osztályozó osztályozni fogja az adott tesztadatot és összehasonlítja a ClassValuevel
                 votes[j] = optimalSet.get(j).classifyInstance(is);
             } else {
             	// Mit csinál?
@@ -164,13 +168,19 @@ class EnsembleTrainer{
                     fusionType.setWeights(search.assignWeights(optimalSet));
                 }
                 
+                List<Double> predictions = new ArrayList<Double>();
+                
+                
+                
                 while (instEnum.hasMoreElements()) {
                 	// Kiszedjük a következõ elemét
                     Instance is = instEnum.nextElement();
                     // Megkérdezzük, hogy az is-nek mi a class value-ja? Mi volt a valós osztálycímke
                     double classValue = is.classValue();
-                    // MIt mond az osztályozó
+                    // Összevont osztályozók eredménye
                     double prediction = test(is);
+                    
+                    predictions.add(prediction);
                     if (prediction > 0.5) {
                         prediction = 1.0;
                     } else {
@@ -210,7 +220,7 @@ class EnsembleTrainer{
                     accStat.addValue(acc);
                 }
                 
-                nullValueStatistic.add(new NullValueStatistic(fp+tn,tp+fn,acc,fusionType));
+                nullValueStatistic.add(new NullValueStatistic(fp+tn,tp+fn,acc,fusionType, predictions));
                 
                 System.out.println("nullas ertek: " + fp+tn);
                 System.out.println("egyes ertek: " + tp+fn);
@@ -236,7 +246,7 @@ class EnsembleTrainer{
     	Date start = new Date();
         nullValueStatistic = new ArrayList<NullValueStatistic>();
 
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<1; i++) {
         	List<Classifier> classifiers = new ArrayList<Classifier>();
             classifiers.add(new ADTree());
             classifiers.add(new IBk(33));
